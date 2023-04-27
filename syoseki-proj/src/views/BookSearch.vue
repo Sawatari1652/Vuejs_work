@@ -24,18 +24,62 @@
 export default {
   data() {
     return {
-      headers: [
-        { text: "タイトル", value: "col1", align: "center" },
-        { text: "著者", value: "col2", align: "center" },
-        { text: "出版社", value: "col3", align: "center" },
-      ],
       items: [
+        {title: "はじめてのVue", author: "田中太郎", publisher: "ABC株式会社"},
+        {title: "はじめてのJava", author: "田中太郎", publisher: "ABC株式会社"},
+        {title: "はじめてのC", author: "田中太郎", publisher: "ABC株式会社"},
       ],
+      title: "",
+      author: "",
+      publisher: ""
     }
   },
+  computed: {
+      headers() {
+        return [
+          {
+            text: 'タイトル',
+            align: 'center',
+            sortable: false,
+            value: 'title',
+            filter: this.titleFilter,
+          },
+          {
+            text: '著者',
+            align: 'center',
+            value: 'author',
+            filter: this.authorFilter,
+          },
+          {
+            text: '出版社',
+            align: 'center',
+            value: 'publisher',
+            filter: this.publisherFilter,
+          },
+        ]
+      },
+    },
   methods:{
     rowClick(){
       this.$router.push('/BookInfo')
+    },
+    titleFilter(value) {
+        if (!this.titleFilterValue) {
+          return true
+        }
+        return value.toLowerCase().includes(this.titleFilterValue.toLowerCase());
+    },
+    authorFilter(value) {
+        if (!this.authorFilterValue) {
+          return true
+        }
+        return value === this.authorFilterValue
+    },
+    publisherFilter(value) {
+        if(!this.publisherFilterValue) {
+          return true
+        }
+        return value === this.publisherFilterValue
     }
   }
 }
