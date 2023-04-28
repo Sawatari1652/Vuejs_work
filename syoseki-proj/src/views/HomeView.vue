@@ -23,16 +23,11 @@
         </v-form>
       </v-card-text>
     </v-card>
-    
-    <div id="nav">
-      <router-link to="/BookSearch">一覧画面</router-link>
-    </div>
   </v-app>
 </template>
 
 <script>
 
-import axios from 'axios'
 
 export default {
   name: 'App',
@@ -46,12 +41,7 @@ export default {
   },
   methods:{
     submit(){
-      axios.get('http://127.0.0.1:4321/login')
-        .then(response => {
-          if (response.status === 200) {
             this.$router.push('/BookSearch')
-          }
-        })
     }
   }
 }

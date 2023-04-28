@@ -4,85 +4,91 @@
     <v-text-field type="text" v-model="title" label="タイトル"></v-text-field>
     <v-text-field type="text" v-model="author" label="著者"></v-text-field>
     <v-text-field type="text" v-model="publisher" label="出版社"></v-text-field>
-    <v-row justify="start">
-        <v-col cols="12">
-          <v-card>
-            <v-data-table
-              :headers="headers"
-              :items="items"
-              @click:row="rowClick"
-            />
-          </v-card>
-        </v-col>
-      </v-row>
-    <hr />
+    <div class="row">
+        <div
+          class="
+            col-md-2 col-md-offset-8 col-xs-10 col-xs-offset-1 col-sm-10
+            offset-sm-1
+          ">
+          <input
+            type="submit"
+            class="btn btn-fill btn-primary"
+            value="検索"
+          />
+        </div>
+    </div>
+    <div class="spacer"></div>
+
+    <div class="container">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>タイトル</th>
+              <th>著者</th>
+              <th>出版社</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item,index) in search_list" v-bind:key="index">
+              <td @click="detail(item.bookid)">{{item.title}}</td>
+              <td>{{item.author}}</td>
+              <td>{{item.publisher}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <p v-if="search_list.length===0">検索結果は0件です</p>
+    </div>
+    <div class="spacer"></div>
+    
+    <div class="floating" onclick="location.href='register.html'">
+      <span>
+        <i
+          class="glyphicon glyphicon-plus"
+          style="margin-top: 8px; margin-left: 3px"
+        ></i>
+      </span>
+    </div>
   </div>
 </template>
 
 <script>
 
-export default {
+import axios from 'axios'
+import { defineComponent } from 'vue';
+
+export default defineComponent({
   data() {
     return {
-      items: [
-        {title: "はじめてのVue", author: "田中太郎", publisher: "ABC株式会社"},
-        {title: "はじめてのJava", author: "田中太郎", publisher: "ABC株式会社"},
-        {title: "はじめてのC", author: "田中太郎", publisher: "ABC株式会社"},
-      ],
-      title: "",
-      author: "",
-      publisher: ""
-    }
+      // Jsonのデータを格納
+      search_list: []
+    };
   },
-  computed: {
-      headers() {
-        return [
-          {
-            text: 'タイトル',
-            align: 'center',
-            sortable: false,
-            value: 'title',
-            filter: this.titleFilter,
-          },
-          {
-            text: '著者',
-            align: 'center',
-            value: 'author',
-            filter: this.authorFilter,
-          },
-          {
-            text: '出版社',
-            align: 'center',
-            value: 'publisher',
-            filter: this.publisherFilter,
-          },
-        ]
-      },
+  name: 'BooksList',
+  created: function () {
+    axios.post('http://localhost:8081/bookslistget')
+      .then(response => {
+        this.search_list = response.data
+      })
+  },
+  methods: {
+    logout () {
+      return this.$store.dispatch('logout')
+        .then(() => {
+          this.$router.push('/login')
+        })
+        .catch(error => { throw error })
     },
-  methods:{
-    rowClick(){
-      this.$router.push('/BookInfo')
+    detail ( bookid ) {
+      this.$router.push({
+        name: 'BookDetail',
+        params: { bookid : bookid }
+      })
     },
-    titleFilter(value) {
-        if (!this.titleFilterValue) {
-          return true
-        }
-        return value.toLowerCase().includes(this.titleFilterValue.toLowerCase());
-    },
-    authorFilter(value) {
-        if (!this.authorFilterValue) {
-          return true
-        }
-        return value === this.authorFilterValue
-    },
-    publisherFilter(value) {
-        if(!this.publisherFilterValue) {
-          return true
-        }
-        return value === this.publisherFilterValue
+    regist () {
+          this.$router.push('/bookregist')
     }
   }
-}
+});
 </script>
 
 <style scoped>

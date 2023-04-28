@@ -20,6 +20,20 @@ const routes = [
     path: '/BookInfo',
     name: 'BookInfo',
     component: BookInfo
+  },
+  {
+    path: '/bookmodify/:bookid',
+    name: 'BookModify',
+    meta: {
+      requiresAuth: true 
+    }
+  },
+  {
+    path: '/bookregist',
+    name: 'BookRegist',
+    meta: {
+      requiresAuth: true 
+    }
   }
 ]
 
